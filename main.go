@@ -21,7 +21,7 @@ func submitUrl(url url.URL, server *url.URL, code *string) {
 		}`)
 	} else {
 		jsonData = []byte(`{
-			"link": "` + url.String() + `",
+			"link": "` + url.String() + `"
 		}`)
 	}
 	resp, err := http.Post(server.String(), "application/json", bytes.NewBuffer(jsonData))
@@ -30,9 +30,9 @@ func submitUrl(url url.URL, server *url.URL, code *string) {
 	}
 	body, _ := io.ReadAll(resp.Body)
 	if resp.StatusCode == 200 {
-		fmt.Println("Successfully created shortlink pointing from " + url.String() + " to " + strings.TrimRight(server.String(), "/") + "/" + string(body))
+		fmt.Println("Successfully created shortlink pointing to " + url.String() + " from " + strings.TrimRight(server.String(), "/") + "/" + string(body))
 	} else {
-		fmt.Println("Error " + resp.Status + " shortening " + url.String() + ": " + string(body))
+		panic("Error " + resp.Status + " while shortening " + url.String() + ": \n" + string(body))
 	}
 	resp.Body.Close()
 }

@@ -9,10 +9,10 @@ library to help manage command line arguments. Usage is shown below:
 shorten [-s shortlinks_url] [-c requested_shortcode] url1 url2...
 
 # Shows help info
-shorten
+shorten -h
 shorten --help
 
-# Sets env. variable SHORTLINKS_SERVER to hold new shortlink server url
+# Sets default shortlink server url
 shorten -s shortlinks_url
 shorten --set-server shortlinks_url
 

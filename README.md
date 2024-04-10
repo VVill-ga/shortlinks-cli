@@ -2,7 +2,7 @@
 
 Shortlinks CLI is a cross-platform terminal based front-end to the
 [Shortlinks API](https://github.com/VVill-ga/shortlinks) written in Go.
-Shortlinks CLI uses the [Go-Flags](https://github.com/jessevdk/go-flags)
+Shortlinks CLI uses the [Go-Arg](https://github.com/alexflint/go-arg)
 library to help manage command line arguments. Usage is shown below:
 
 ```bash

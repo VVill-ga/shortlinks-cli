@@ -6,9 +6,10 @@ Shortlinks CLI uses the [Go-Arg](https://github.com/alexflint/go-arg)
 library to help manage command line arguments. Usage is shown below:
 
 ```bash
-shorten [-s shortlinks_url] [-c requested_shortcode] url1 url2...
+shorten [-p] [-s shortlinks_url] [-c requested_shortcode] [url1 url2...]
 
 # Shows help info
+shorten
 shorten -h
 shorten --help
 
@@ -29,9 +30,22 @@ shorten -c requested_shortcode url
 shorten --request-code requested_shortcode url
 
 # -p or --plain can be used for exporting new urls
+shorten -p url1 url2 url3 > NewShortlinks.txt 
 shorten --plain url1 url2 url3 > NewShortlinks.txt 
 ```
 
 The one bit of configuration used by this program (the default server url)
 is stored in plaintext in a hidden file `.shortlinks_server` in the users home
 directory (found using Go's `os.UserHomeDir()`).
+
+## Compiling
+
+**REQUIRES:** *Go, Git (for cloning the repo)*
+
+To compile the program, from within the project directory, run:
+```bash
+go mod download # To download dependencies
+go build        # To build the executable
+```
+And now you should find the executable `shorten` or `shorten.exe` in this
+directory! Move it to somewhere on your `$PATH` or just run it from here.

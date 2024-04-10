@@ -12,7 +12,7 @@ import (
 	"github.com/alexflint/go-arg"
 )
 
-func submitUrl(url url.URL, server *url.URL, code *string) {
+func submitUrl(url url.URL, server *url.URL, code *string, plain bool) {
 	var jsonData []byte
 	if code != nil {
 		jsonData = []byte(`{
@@ -30,7 +30,11 @@ func submitUrl(url url.URL, server *url.URL, code *string) {
 	}
 	body, _ := io.ReadAll(resp.Body)
 	if resp.StatusCode == 200 {
-		fmt.Println("Successfully created shortlink pointing to " + url.String() + " from " + strings.TrimRight(server.String(), "/") + "/" + string(body))
+		if plain {
+			fmt.Println(strings.TrimRight(server.String(), "/") + "/" + string(body))
+		} else {
+			fmt.Println("Successfully created shortlink pointing to " + url.String() + " from " + strings.TrimRight(server.String(), "/") + "/" + string(body))
+		}
 	} else {
 		panic("Error " + resp.Status + " while shortening " + url.String() + ": \n" + string(body))
 	}
@@ -50,10 +54,15 @@ func main() {
 
 	var options struct {
 		URLs   []url.URL `arg:"positional"`
-		Code   *string   `arg:"-c,--request-code" help:"The shortlink path to be requested from server."`
-		Server *url.URL  `arg:"-s,--set-server" help:"Server url to use for making shortlinks. When ran with this option alone, it sets the default server."`
+		Plain  bool      `arg:"-p,--plain" help:"only outputs created shortlinks seperated by newlines"`
+		Code   *string   `arg:"-c,--request-code" placeholder:"CODE" help:"path to be requested from server"`
+		Server *url.URL  `arg:"-s,--set-server" placeholder:"URL" help:"server url to use for this conversion. When ran with this option alone, it sets the default server."`
 	}
 	p := arg.MustParse(&options)
+
+	if options.Code == nil && options.Server == nil && len(options.URLs) == 0 {
+		p.WriteHelp(os.Stdout)
+	}
 
 	if options.Code != nil && len(options.URLs) != 1 {
 		p.Fail("Request-Code option only valid when shortening a single url.")
@@ -68,10 +77,10 @@ func main() {
 			p.Fail("Shortlinks Server URL not provided. Run \"shorten -s [Server URL]\" to set your default server url.")
 		}
 		if options.Code != nil {
-			submitUrl(options.URLs[0], serverURL, options.Code)
+			submitUrl(options.URLs[0], serverURL, options.Code, options.Plain)
 		} else {
 			for _, link := range options.URLs {
-				submitUrl(link, serverURL, nil)
+				submitUrl(link, serverURL, nil, options.Plain)
 			}
 		}
 	}

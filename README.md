@@ -27,6 +27,9 @@ shorten url1 url2 ...
 # NOTE: Can only be used with one url
 shorten -c requested_shortcode url
 shorten --request-code requested_shortcode url
+
+# -p or --plain can be used for exporting new urls
+shorten --plain url1 url2 url3 > NewShortlinks.txt 
 ```
 
 The one bit of configuration used by this program (the default server url)

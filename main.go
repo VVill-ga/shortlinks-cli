@@ -42,13 +42,18 @@ func submitUrl(url url.URL, server *url.URL, code *string, plain bool) {
 }
 
 func main() {
-	homeDir, _ := os.UserHomeDir()
-	serverURLdata, err := os.ReadFile(homeDir + string(os.PathSeparator) + ".shortlinks_server")
+  configPath := os.Getenv("XDG_CONFIG_HOME")
+  if(len(configPath) == 0){
+    homeDir, _ := os.UserHomeDir()
+    configPath = homeDir + string(os.PathSeparator) + ".config"
+  }
+  configPath += string(os.PathSeparator) + "shortlinks_server"
+	serverURLdata, err := os.ReadFile(configPath)
 	var serverURL *url.URL
 	if err == nil {
 		serverURL, err = url.Parse(string(serverURLdata))
 		if err != nil {
-			panic("Error reading saved server url. Delete `.shortlinks_service` from your home directory and try again.")
+			panic("Error reading saved server url. Delete `shortlinks_service` from your config directory ("+configPath+") and try again.")
 		}
 	}
 
@@ -67,8 +72,10 @@ func main() {
 	if options.Code != nil && len(options.URLs) != 1 {
 		p.Fail("Request-Code option only valid when shortening a single url.")
 	} else if options.Server != nil && len(options.URLs) == 0 {
-		os.Remove(homeDir + string(os.PathSeparator) + ".shortlinks_server")
-		os.WriteFile(homeDir+string(os.PathSeparator)+".shortlinks_server", []byte(options.Server.String()), 0666)
+		os.Remove(configPath)
+    folders := strings.Split(configPath, string(os.PathSeparator))
+    os.MkdirAll(strings.Join(folders[:len(folders)-1], string(os.PathSeparator)), 0666)
+		os.WriteFile(configPath, []byte(options.Server.String()), 0666)
 	} else {
 		if options.Server != nil {
 			serverURL = options.Server

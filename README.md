@@ -35,8 +35,8 @@ shorten --plain url1 url2 url3 > NewShortlinks.txt
 ```
 
 The one bit of configuration used by this program (the default server url)
-is stored in plaintext in a hidden file `.shortlinks_server` in the users home
-directory (found using Go's `os.UserHomeDir()`).
+is stored in plaintext in a file called`shortlinks_server` in the users 
+config directory (`$XDG_CONFIG_HOME` or `~/.config/` by default).
 
 ## Compiling
 
